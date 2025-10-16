@@ -29,7 +29,8 @@ jobs:
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          # owner: <seu-usuario-ou-organizacao>  # opcional, se precisar fixar
+          owner: bruno561                  # ou a sua organização
+          repositories: terraform-cloud-run-module  # repo onde o módulo está
 
       # 2) Configura autenticação HTTPS via ~/.netrc (sem token na URL)
       - name: Configure git auth (netrc)
