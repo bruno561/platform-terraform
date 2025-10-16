@@ -1,0 +1,68 @@
+name: 'Apply DEV service-xpto (GitHub App, HTTPS)'
+on:
+  workflow_dispatch:
+
+jobs:
+  terragrunt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read          # p/ este repo
+      id-token: write         # se usar OIDC/WIF no GCP
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS_TF }}  # p/ autenticar gcloud/gsutil
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: "./gcp/development-367511/us-east4/product/dev/iac/terraform/cloudrun/service-xpto"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false   # evita gravar GITHUB_TOKEN no git config
+
+      # 1) Gera token efêmero do GitHub App com contents:read no repo do módulo
+      - id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          # owner: <seu-usuario-ou-organizacao>  # opcional, se precisar fixar
+
+      # 2) Configura autenticação HTTPS via ~/.netrc (sem token na URL)
+      - name: Configure git auth (netrc)
+        run: |
+          umask 077
+          cat > ~/.netrc <<'EOF'
+          machine github.com
+            login x-access-token
+            password $TOKEN
+          EOF
+        env:
+          TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Setup Terraform Version
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+            terraform_version: 1.9.8
+
+      - name: Setup Terragrunt
+        uses: autero1/action-terragrunt@aefb0a43c4f5503a91fefb307745c4d51c26ed0e
+        with:
+            terragrunt-version: 0.55.2
+
+      - name: Terragrunt Init
+        run: terragrunt run-all init
+
+      - name: Terragrunt Validate
+        run: terragrunt run-all validate
+
+      - name: Terragrunt Plan
+        run: terragrunt run-all plan
+
+      # (opcional) higiene
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f ~/.netrc || true
