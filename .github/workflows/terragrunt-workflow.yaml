@@ -45,9 +45,6 @@ jobs:
         env:
             TOKEN: ${{ steps.app-token.outputs.token }}
 
-      - name: Sanity check git auth
-        run: git ls-remote https://github.com/bruno561/terraform-cloud-run-module.git HEAD
-
       - name: Setup Terraform Version
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
