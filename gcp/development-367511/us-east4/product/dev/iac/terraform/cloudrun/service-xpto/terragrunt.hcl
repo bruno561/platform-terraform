@@ -1,8 +1,8 @@
 terraform {
   # HTTPS limpo — sem token na URL
-  source = "git::https://github.com/<seu-usuario>/terraform-cloud-run-module.git//?ref=main"
+  source = "git::https://github.com/bruno561/terraform-cloud-run-module.git//?ref=main"
   # ou por commit SHA (melhor prática):
-  # source = "git::https://github.com/<seu-usuario>/terraform-cloud-run-module.git//?ref=<COMMIT_SHA>"
+  # source = "git::https://github.com/bruno561/terraform-cloud-run-module.git//?ref=<COMMIT_SHA>"
 }
 
 include "root" {
