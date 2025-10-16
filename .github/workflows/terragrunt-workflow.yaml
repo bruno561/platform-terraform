@@ -35,14 +35,18 @@ jobs:
       # 2) Configura autenticação HTTPS via ~/.netrc (sem token na URL)
       - name: Configure git auth (netrc)
         run: |
-          umask 077
-          cat > ~/.netrc <<'EOF'
-          machine github.com
+            umask 077
+            cat > ~/.netrc <<'EOF'
+            machine github.com
             login x-access-token
             password $TOKEN
-          EOF
+            EOF
+            chmod 600 ~/.netrc
         env:
-          TOKEN: ${{ steps.app-token.outputs.token }}
+            TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Sanity check git auth
+        run: git ls-remote https://github.com/bruno561/terraform-cloud-run-module.git HEAD
 
       - name: Setup Terraform Version
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
