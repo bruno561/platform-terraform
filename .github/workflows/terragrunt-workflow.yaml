@@ -45,6 +45,18 @@ jobs:
         env:
             TOKEN: ${{ steps.app-token.outputs.token }}
 
+      # 3) Fallback robusto: header HTTP Authorization para github.com
+      - name: Configure git auth (extraheader)
+        run: |
+          BASIC=$(printf "x-access-token:%s" "${TOKEN}" | base64 -w0 2>/dev/null || printf "x-access-token:%s" "${TOKEN}" | base64)
+          git config --global http.https://github.com/.extraheader "AUTHORIZATION: basic ${BASIC}"
+        env:
+          TOKEN: ${{ steps.app-token.outputs.token }}
+
+      # 4) Sanity check (deve funcionar; se falhar, é credencial)
+      - name: Sanity check git auth
+        run: git ls-remote https://github.com/bruno561/terraform-cloud-run-module.git HEAD
+
       - name: Setup Terraform Version
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
