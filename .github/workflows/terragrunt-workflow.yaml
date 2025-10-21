@@ -48,13 +48,6 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
 
-      - name: List files in workspace
-        run: |
-          echo "Listando arquivos na raiz do repositório:"
-          ls -la
-          echo "Listando arquivos na pasta do módulo:"
-          ls -la modules/terraform-cloud-run-module
-
       - name: Setup Terraform Version
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
