@@ -24,13 +24,29 @@ jobs:
           persist-credentials: false
           # evita gravar GITHUB_TOKEN no git config
       
+# Checkout do repositório principal
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Gera token efêmero do GitHub App
+      - id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: bruno561
+          repositories: terraform-cloud-run-module
+
+      # Checkout do repositório do módulo usando o token do GitHub App
       - name: Checkout Terraform module repo
         uses: actions/checkout@v4
         with:
-          repository: bruno561/terraform-cloud-run-module@main
+          repository: bruno561/terraform-cloud-run-module
           path: modules/terraform-cloud-run-module
+          token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}  # ou um token com acesso ao repo
 
       - name: List files in workspace
         run: |
