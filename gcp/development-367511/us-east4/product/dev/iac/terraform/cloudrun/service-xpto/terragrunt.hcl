@@ -1,9 +1,8 @@
 terraform {
-  # HTTPS limpo — sem token na URL
-  source = "git::https://github.com/bruno561/terraform-cloud-run-module.git//terraform-cloud-run-module?ref=v0.1.0"
-  # ou por commit SHA (melhor prática):
-  # source = "git::https://github.com/bruno561/terraform-cloud-run-module.git//?ref=<COMMIT_SHA>"
+  # Caminho local para o módulo clonado via checkout no workflow
+  source = "${get_repo_root()}/modules/terraform-cloud-run-module//terraform-cloud-run-module"
 }
+
 
 include "root" {
   path = find_in_parent_folders()
