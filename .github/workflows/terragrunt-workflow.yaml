@@ -27,7 +27,7 @@ jobs:
       - name: Checkout Terraform module repo
         uses: actions/checkout@v4
         with:
-          repository: bruno561/terraform-cloud-run-module
+          repository: bruno561/terraform-cloud-run-module@main
           path: modules/terraform-cloud-run-module
           fetch-depth: 0
 
