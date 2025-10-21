@@ -21,41 +21,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false   # evita gravar GITHUB_TOKEN no git config
-
-      # 1) Gera token efêmero do GitHub App com contents:read no repo do módulo
-      - id: app-token
-        uses: actions/create-github-app-token@v1
+          persist-credentials: false
+          # evita gravar GITHUB_TOKEN no git config
+      
+      - name: Checkout Terraform module repo
+        uses: actions/checkout@v4
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          owner: bruno561                  # ou a sua organização
-          repositories: terraform-cloud-run-module  # repo onde o módulo está
-
-      # 2) Configura autenticação HTTPS via ~/.netrc (sem token na URL)
-      - name: Configure git auth (netrc)
-        run: |
-            umask 077
-            cat > ~/.netrc <<'EOF'
-            machine github.com
-            login x-access-token
-            password $TOKEN
-            EOF
-            chmod 600 ~/.netrc
-        env:
-            TOKEN: ${{ steps.app-token.outputs.token }}
-
-      # 3) Fallback robusto: header HTTP Authorization para github.com
-      - name: Configure git auth (extraheader)
-        run: |
-          BASIC=$(printf "x-access-token:%s" "${TOKEN}" | base64 -w0 2>/dev/null || printf "x-access-token:%s" "${TOKEN}" | base64)
-          git config --global http.https://github.com/.extraheader "AUTHORIZATION: basic ${BASIC}"
-        env:
-          TOKEN: ${{ steps.app-token.outputs.token }}
-
-      # 4) Sanity check (deve funcionar; se falhar, é credencial)
-      - name: Sanity check git auth
-        run: git ls-remote https://github.com/bruno561/terraform-cloud-run-module.git HEAD
+          repository: bruno561/terraform-cloud-run-module
+          path: modules/terraform-cloud-run-module
+          fetch-depth: 0
 
       - name: Setup Terraform Version
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
