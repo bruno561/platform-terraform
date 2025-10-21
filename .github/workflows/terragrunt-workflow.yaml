@@ -30,6 +30,7 @@ jobs:
           repository: bruno561/terraform-cloud-run-module@main
           path: modules/terraform-cloud-run-module
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}  # ou um token com acesso ao repo
 
       - name: List files in workspace
         run: |
