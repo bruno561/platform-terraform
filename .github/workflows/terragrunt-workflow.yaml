@@ -6,8 +6,11 @@ jobs:
   terragrunt:
     runs-on: ubuntu-latest
     permissions:
-      contents: read          # p/ este repo
-      id-token: write         # se usar OIDC/WIF no GCP
+      pull-requests: write
+      contents: read
+      actions: read
+      repository-projects: read
+      statuses: write
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS_TF }}  # p/ autenticar gcloud/gsutil
 
@@ -30,22 +33,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Gera token efêmero do GitHub App
-      - id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          owner: bruno561
-          repositories: terraform-cloud-run-module
-
       # Checkout do repositório do módulo usando o token do GitHub App
       - name: Checkout Terraform module repo
         uses: actions/checkout@v4
         with:
           repository: bruno561/terraform-cloud-run-module
           path: modules/terraform-cloud-run-module
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ secrets.GH_TOKEN }} # stored in GitHub secrets
           fetch-depth: 0
 
       - name: Setup Terraform Version
@@ -66,8 +60,3 @@ jobs:
 
       - name: Terragrunt Plan
         run: terragrunt run-all plan
-
-      # (opcional) higiene
-      - name: Cleanup credentials
-        if: always()
-        run: rm -f ~/.netrc || true
