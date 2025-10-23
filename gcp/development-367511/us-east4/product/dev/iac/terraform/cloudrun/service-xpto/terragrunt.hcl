@@ -14,6 +14,7 @@ include "root" {
 
 inputs = {
   project_id     = local.env.project_id
+  location = us-east4
 
 
   # repassa labels/vars específicas do ambiente para o módulo
