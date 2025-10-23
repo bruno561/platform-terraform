@@ -13,12 +13,11 @@ include "root" {
 }
 
 inputs = {
-  project     = local.env.project
-  region      = local.env.region
-  environment = local.env.environment
+  project_id     = local.env.project_id
+
 
   # repassa labels/vars específicas do ambiente para o módulo
-  labels = local.env.labels
+  service_labels = local.env.service_labels
 
   # exemplo de variáveis do seu módulo
   service_name = "service-xpto"
