@@ -17,7 +17,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: "./gcp/development-367511/us-east4/product/dev/iac/terraform/cloudrun/service-xpto/dev"
+        working-directory: "./gcp/development-367511/us-east4/product/dev/iac/terraform/cloudrun/service-xpto"
 
     steps:
       - name: Checkout
@@ -53,7 +53,7 @@ jobs:
             terragrunt-version: 0.55.2
 
       - name: Terragrunt Init
-        run: terragrunt init
+        run: terragrunt run-all init
 
       - name: Terragrunt Validate
         run: terragrunt run-all validate
