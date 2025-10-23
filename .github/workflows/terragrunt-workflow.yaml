@@ -17,7 +17,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: "./gcp/development-367511/us-east4/product/dev/iac/terraform/cloudrun/service-xpto"
+        working-directory: "./gcp/development-367511/us-east4/product/dev/iac/terraform/cloudrun/service-xpto/dev"
 
     steps:
       - name: Checkout
