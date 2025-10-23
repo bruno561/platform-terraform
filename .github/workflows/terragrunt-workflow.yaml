@@ -22,16 +22,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+          
+      - id: app-token
+        uses: actions/create-github-app-token@v1
         with:
-          fetch-depth: 0
-          persist-credentials: false
-          # evita gravar GITHUB_TOKEN no git config
-      
-# Checkout do repositório principal
-      - name: Checkout main repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: bruno561                  # ou a sua organização
+          repositories: terraform-cloud-run-module 
 
       # Checkout do repositório do módulo usando o token do GitHub App
       - name: Checkout Terraform module repo
@@ -39,8 +37,10 @@ jobs:
         with:
           repository: bruno561/terraform-cloud-run-module
           path: modules/terraform-cloud-run-module
-          token: ${{ secrets.GH_TOKEN }} # stored in GitHub secrets
+          token: ${{ steps.app-token.outputs.token }} # stored in GitHub secrets
           fetch-depth: 0
+
+ # repo onde o módulo está
 
       - name: Setup Terraform Version
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
