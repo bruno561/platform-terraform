@@ -53,7 +53,7 @@ jobs:
             terragrunt-version: 0.55.2
 
       - name: Terragrunt Init
-        run: terragrunt run-all init
+        run: terragrunt init
 
       - name: Terragrunt Validate
         run: terragrunt run-all validate
