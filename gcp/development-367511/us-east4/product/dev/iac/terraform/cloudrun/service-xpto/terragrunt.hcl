@@ -3,15 +3,24 @@ terraform {
   source = "${get_repo_root()}/modules/terraform-cloud-run-module//terraform-cloud-run-module"
 }
 
+locals {
+  # lê o env.hcl que está em pastas pai
+  env = read_terragrunt_config(find_in_parent_folders("env.hcl")).locals
+}
 
 include "root" {
   path = find_in_parent_folders()
 }
 
 inputs = {
-  project_id   = "development-367511"     # seu projeto fictício (ou o real do lab)
-  location     = "us-east4"
+  project     = local.env.project
+  region      = local.env.region
+  environment = local.env.environment
+
+  # repassa labels/vars específicas do ambiente para o módulo
+  labels = local.env.labels
+
+  # exemplo de variáveis do seu módulo
   service_name = "service-xpto"
-  image        = "gcr.io/cloudrun/hello"
-  members      = ["allUsers"]      # só para teste rápido; depois remova/política adequada
+  image        = "gcr.io/${local.env.project}/service-xpto:${local.env.image_tag}"
 }
