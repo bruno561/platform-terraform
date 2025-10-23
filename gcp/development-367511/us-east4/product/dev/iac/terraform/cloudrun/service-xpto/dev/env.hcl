@@ -1,10 +1,8 @@
 locals {
-  environment = "dev"
-  project     = "development-367511"
-  region      = "us-east4"
+  project_id     = "development-367511"
 
   # variáveis específicas do ambiente
-  labels = {
+  service_labels = {
     environment = "dev"
     team        = "product"
   }
