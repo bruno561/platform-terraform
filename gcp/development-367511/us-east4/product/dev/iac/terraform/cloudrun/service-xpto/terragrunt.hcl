@@ -4,8 +4,8 @@ terraform {
 }
 
 locals {
-  # lê o env.hcl que está em pastas pai
-  env = read_terragrunt_config(find_in_parent_folders("env.hcl")).locals
+  # antes: env = read_terragrunt_config(find_in_parent_folders("env.hcl")).locals
+  env = read_terragrunt_config("${get_terragrunt_dir()}/dev/env.hcl").locals
 }
 
 include "root" {
