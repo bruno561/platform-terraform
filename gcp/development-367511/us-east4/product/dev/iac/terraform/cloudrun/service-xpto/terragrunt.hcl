@@ -22,5 +22,5 @@ inputs = {
 
   # exemplo de variáveis do seu módulo
   service_name = "service-xpto"
-  image        = "gcr.io/${local.env.project}/service-xpto:${local.env.image_tag}"
+  image        = "gcr.io/cloudrun/hello"
 }
